@@ -12,9 +12,9 @@ class Comment < ApplicationRecord
   private
 
   def update_post_comments_counter
-    post.increement!(:comments_counter)
+    post.increment!(:comments_counter)
   end
-  
+
   # Validations
   validates :text, presence: true
 end
