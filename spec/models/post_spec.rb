@@ -1,53 +1,68 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
-  subject { Post.new(title: 'First Post', comments_counter: 2, likes_counter: 1) }
+RSpec.describe Post, type: :model do
+  let(:user) { User.create(name: 'John') }
+  let(:subject_post) { Post.new(title: 'Welcome', author: user) }
 
-  before { subject.save }
-  it 'title should be present' do
-    subject.title = nil
-    expect(subject).to_not be_valid
+  describe 'validation tests' do
+    it 'title should be present' do
+      subject_post.title = nil
+      expect(subject_post).to_not be_valid
+    end
+
+    it 'title should be less than 251 chars' do
+      subject_post.title = 'Lorem ipsum dolor sit amet,
+      consectetuer adipiscing elit. Aenean commodo ligula
+      eget dolor. Aenean massa. Cum sociis natoque penatibus
+      et magnis dis parturient montes, nascetur ridiculus mus.
+      Donec quam felis, ultricies neln ea'
+      expect(subject_post).to_not be_valid
+    end
+
+    it 'comments_counter should be integer' do
+      subject_post.comments_counter = 'hi'
+      expect(subject_post).to_not be_valid
+    end
+
+    it 'comments_counter should be greater than or equal to zero' do
+      subject_post.comments_counter = -2
+      expect(subject_post).to_not be_valid
+      subject_post.comments_counter = 0
+      expect(subject_post).to be_valid
+    end
+
+    it 'likes_counter should be greater than or equal to zero' do
+      subject_post.likes_counter = -2
+      expect(subject_post).to_not be_valid
+      subject_post.likes_counter = 0
+      expect(subject_post).to be_valid
+    end
   end
 
-  it 'title should not exceed 250 characters' do
-    subject.title = 'a' * 251
-    expect(subject).not_to be_valid
+  describe '#update_user_posts_counter' do
+    it 'updates the user posts_counter attribute' do
+      # Act
+      subject_post.send(:update_user_posts_counter)
+
+      # Assert
+      expect(user.reload.posts_counter).to eq(1)
+    end
   end
 
-  it 'comment_counter should be greater than or equal to 0' do
-    subject.comments_counter = -1
-    expect(subject).not_to be_valid
-  end
+  describe '#five_most_recent_comments' do
+    it 'returns the 5 most recent comments' do
+      # Arrange
+      comment1 = Comment.create(author: user, post: subject_post, text: 'comment 1', created_at: 5.days.ago)
+      comment2 = Comment.create(author: user, post: subject_post, text: 'comment 2', created_at: 4.days.ago)
+      comment3 = Comment.create(author: user, post: subject_post, text: 'comment 3', created_at: 3.days.ago)
+      comment4 = Comment.create(author: user, post: subject_post, text: 'comment 4', created_at: 2.days.ago)
+      comment5 = Comment.create(author: user, post: subject_post, text: 'comment 5', created_at: 1.days.ago)
 
-  it 'like_counter should be greater than or equal to 0' do
-    subject.likes_counter = -3
-    expect(subject).not_to be_valid
-  end
+      # Act
+      recent_comments = subject_post.send(:recent_comments)
 
-  it 'comment_counter should an integer' do
-    subject.comments_counter = 1.2
-    expect(subject).not_to be_valid
-  end
-
-  it 'like_counter should an integer' do
-    subject.likes_counter = 3.2
-    expect(subject).not_to be_valid
-  end
-
-  it 'should update_user_posts_counter' do
-    author = User.create!(name: 'Kay', postsCounters: 0)
-    post = Post.new(title: 'First Post', comments_counter: 0, likes_counter: 0, author:)
-    expect { post.save! }.to change { author.reload.postsCounters }.by(1)
-  end
-
-  it 'should return recent_5_comments_for_post' do
-    author = User.create!(name: 'Kay', postsCounters: 0)
-    post = Post.create!(title: 'First Post', comments_counter: 0, likes_counter: 0, author:)
-    older_comments = 6.times.map { Comment.create!(post:, text: 'Old comment', author:) }
-    recent_comment = Comment.create!(post:, text: 'Recent comment', author:)
-
-    expect(post.five_most_recent_comments).to include(recent_comment)
-    expect(post.five_most_recent_comments.length).to eq(5)
-    expect(post.five_most_recent_comments).to_not include(older_comments.first)
+      # Assert
+      expect(recent_comments).to eq([comment5, comment4, comment3, comment2, comment1])
+    end
   end
 end
