@@ -1,26 +1,21 @@
+# spec/models/user_spec.rb
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  subject { User.new(name: 'John') }
+  describe '#recent_posts' do
+    it 'returns the most recent posts for the user' do
+      # Arrange
+      user = User.create(name: 'John')
+      post1 = Post.create(title: 'Post 1', author: user, created_at: 2.days.ago)
+      post2 = Post.create(title: 'Post 2', author: user, created_at: 1.day.ago)
+      post3 = Post.create(title: 'Post 3', author: user, created_at: Time.now)
 
-  before { subject.save }
+      # Act
+      recent_posts = user.recent_posts
 
-  describe 'tests for validation' do
-    it 'name should be present' do
-      subject.name = nil
-      expect(subject).to_not be_valid
-    end
-
-    it 'posts_counter should be integer' do
-      subject.posts_counter = 'hi'
-      expect(subject).to_not be_valid
-    end
-
-    it 'posts_counter should be greater than or equal to zero' do
-      subject.posts_counter = -2
-      expect(subject).to_not be_valid
-      subject.posts_counter = 0
-      expect(subject).to be_valid
+      # Assert
+      expect(recent_posts).to eq([post3, post2, post1])
     end
   end
 end

@@ -1,17 +1,24 @@
+# spec/models/like_spec.rb
+
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  describe '#after_save callback' do
-    it 'updates the post likes_counter attribute' do
+  describe '#update_post_likes_counter' do
+    it 'increments the associated post likes_counter' do
       # Arrange
       user = User.create(name: 'John')
-      post = Post.create(title: 'Hi', author: user)
+      post = Post.create(title: 'Hello', author: user)
+      like = Like.new(author: user)
 
       # Act
-      post.likes.create(author: user)
+      like.post = post
+      like.save
+
+      # Reload the post from the database to get the latest data
+      post.reload
 
       # Assert
-      expect(post.reload.likes_counter).to eq(1)
+      expect(post.likes_counter).to eq(1)
     end
   end
 end
