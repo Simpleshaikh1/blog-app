@@ -1,17 +1,17 @@
 class User < ApplicationRecord
-  # Attributes
+  has_many :posts, foreign_key: :author_id
+  has_many :commets
+  has_many :likes
+
   attribute :name, :string
-  attribute :photo, :string
   attribute :bio, :text
-  attribute :posts_counter, :integer
+  attribute :post_counter, :integer, default: 0
+  attribute :photo, :string
 
-  # Association
-  has_many :posts, foreign_key: :author_id, dependent: :destroy
-  has_many :comments, dependent: :destroy
-  has_many :likes, dependent: :destroy
+  validates :name, presence: true
+  validates :post_counter, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  # Methods
-  def recent_posts
+  def three_most_recent_posts
     posts.order(created_at: :desc).limit(3)
   end
 end
