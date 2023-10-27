@@ -1,21 +1,39 @@
-# spec/models/user_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe '#recent_posts' do
-    it 'returns the most recent posts for the user' do
-      # Arrange
-      user = User.create(name: 'John')
-      post1 = Post.create(title: 'Post 1', author: user, created_at: 2.days.ago)
-      post2 = Post.create(title: 'Post 2', author: user, created_at: 1.day.ago)
-      post3 = Post.create(title: 'Post 3', author: user, created_at: Time.now)
+  subject { User.new(name: 'Ali') }
 
-      # Act
-      recent_posts = user.recent_posts
+  before { subject.save }
 
-      # Assert
-      expect(recent_posts).to eq([post3, post2, post1])
+  describe 'validation tests' do
+    it 'name should be present' do
+      subject.name = nil
+      expect(subject).to_not be_valid
+    end
+
+    it 'posts_counter should be integer' do
+      subject.post_counter = 'hey'
+      expect(subject).to_not be_valid
+    end
+
+    it 'posts_counter should be greater than or equal to zero' do
+      subject.post_counter = -2
+      expect(subject).to_not be_valid
+      subject.post_counter = 0
+      expect(subject).to be_valid
+    end
+  end
+
+  describe '#three_most_recent_posts' do
+    it 'returns the 3 most recent posts' do
+      user = User.create(name: 'Salim')
+      post1 = Post.create(title: 'post1', author: user, created_at: 4.day.ago)
+      post2 = Post.create(title: 'post2', author: user, created_at: 3.day.ago)
+      post3 = Post.create(title: 'post3', author: user, created_at: 2.day.ago)
+
+      reecent_posts = user.three_most_recent_posts
+
+      expect(reecent_posts).to eq([post3, post2, post1])
     end
   end
 end

@@ -1,24 +1,32 @@
-# spec/models/comment_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  describe '#update_post_comments_counter' do
-    it 'increments the associated post comments_counter' do
-      # Arrange
-      user = User.create(name: 'John')
-      post = Post.create(title: 'Hello', author: user)
-      comment = Comment.new(author: user, text: 'This is a comment')
+  before :all do
+    @user = User.create(name: 'Lily')
+    @post = Post.create(author: @user, title: 'Title')
+  end
 
-      # Act
-      comment.post = post
-      comment.save
+  context '#create' do
+    it 'is valid with the existing user and post' do
+      expect(Comment.new(user: @user, post: @post)).to be_valid
+    end
 
-      # Reload the post from the database to get the latest data
-      post.reload
+    it 'is not valid without the post' do
+      expect(Comment.new(user: @user)).to_not be_valid
+    end
 
-      # Assert
-      expect(post.comments_counter).to eq(1)
+    it 'is not valid without the user' do
+      expect(Comment.new(post: @post)).to_not be_valid
+    end
+
+    context '#update_post_comments_counter' do
+      before :all do
+        8.times { |comment_i| Comment.create(user: @user, post: @post, text: (comment_i + 1).to_s) }
+      end
+
+      it 'keeps track of the comments and equals to 8' do
+        expect(@post.comments_counter).to eq 8
+      end
     end
   end
 end
