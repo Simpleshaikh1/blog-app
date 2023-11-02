@@ -32,7 +32,6 @@ end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  config.include FactoryBot::Syntax::Methods
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -54,7 +53,7 @@ RSpec.configure do |config|
   #     end
   #
   # The different available types are documented in the features, such as in
-  # https://rspec.info/features/6-0/rspec-rails
+  # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
