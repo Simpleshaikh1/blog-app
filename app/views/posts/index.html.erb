@@ -1,1 +1,40 @@
-<h1>Here is a list of posts for a given user</h1>
+<h1 class="users_container">Here is a list of posts for a given user</h1>
+<ul class="users_container">
+ <%= render "shared/user_profile", user: @user %>
+  <% @posts.each_with_index do |post, index| %>
+    <%= link_to user_post_path(@user.id, post.id) do %>
+      <li class="user_all_posts">
+        <div class="user_bio">
+          <h3>Post#<%= index+1 %></h3>
+          <p><%=post.text&.size.to_i > 100 ? "#{post.text[0..100]} ..." : post.text %></p>
+          <div class="user_recent_posts">
+            <span>
+              Comments: <%= post.comments.count %>,
+            </span>
+            <span>
+              Likes: <%= post.likes_counter.nil? ? '0' : post.likes_counter %>
+            </span>
+          </div>
+        </div>
+
+        <div class="user_post_comments">
+          <% if post.comments.empty? %>
+            <div class="user_post_comment">
+              <p>No comments</p>
+            </div>
+          <% else %>
+            <% post.comments[1..5].each_with_index do |comment, index| %>
+              <div class="user_post_comment">
+                <h3><%= index + 1 %>. <%= comment.user.name %></h3>
+                <p><%= comment.text %></p>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  <% end %>
+  <div class="link_user_posts">
+    <%= link_to "Pagination", user_posts_path(user_id: @user.id) %>
+  </div>
+</ul>

@@ -1,0 +1,9 @@
+<li>
+  <div class="user_img">
+    <img src="<%= user.photo %>" alt="Photo">
+  </div>
+  <div class="user_details">
+    <h2><%= user.name %></h2>
+    <p>Number of Posts: <%= user.post_counter.nil? ? '0' : user.post_counter %></p>
+  </div>
+</li>
