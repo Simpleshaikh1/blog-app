@@ -1,7 +1,21 @@
 class PostsController < ApplicationController
     def index
       @user = User.find(params[:user_id])
-      @posts = @user.posts.includes(:comments)
+      # @posts = @user.posts.includes(:comments)
+
+      # N+1 solution
+      page = params[:page] || 1
+      per_page = 10
+
+      @posts = Post.includes(:author)
+        .includes(:comments)
+        .where(author: params[:user_id])
+        .order(created_at: :desc)
+        .offset((page.to_i - 1) * per_page)
+        .limit(per_page)
+
+      @total_pages = (@user.posts.count.to_f / per_page).ceil
+      @author = @posts.first.author unless @posts.first.nil?
     end
 
     def show
