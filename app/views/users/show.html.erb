@@ -1,0 +1,30 @@
+<h1 class="users_container">Displays bio data of a given user</h1>
+<ul class="users_container">
+ <%= render "shared/user_profile", user: @user %>
+  <div class="user_bio">
+    <h3>Bio</h3>
+    <p><%= @user.bio %></p>
+  </div>
+  <% @user.three_most_recent_posts.each_with_index do |posts, index | %>
+    <li>
+      <div class="user_bio">
+        <h3>Post#<%= index+1 %></h3>
+        <p><%= posts.text %></p>
+        <div class="user_recent_posts">
+          <span>
+            Comments:<%= posts.comments_counter.nil? ? '0' : posts.comments_counter %>,
+          </span>
+          <span>
+            Likes:<%= posts.likes_counter.nil? ? '0' : posts.likes_counter %>
+          </span>
+        </div>
+      </div>
+    </li>
+  <% end %>
+  <div class="link_user_posts">
+    <%= link_to "See all posts", user_posts_path(user_id: @user.id) %>
+  </div>
+  <div class="link_user_posts">
+    <%= link_to "Create post", user_posts_path(user_id: @user.id) %>
+  </div>
+</ul>
