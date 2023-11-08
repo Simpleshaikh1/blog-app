@@ -4,12 +4,16 @@ ruby '3.2.2'
 gem 'rails', '~> 7.1.1'
 # Rubocop
 gem 'rubocop', '>= 1.0', '< 2.0'
-# rais-controller-testing
-gem 'rails-controller-testing'
+
+gem 'dotenv-rails', groups: [:development, :test]
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
   gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  # rais-controller-testing
+  gem 'rails-controller-testing'
 end
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
@@ -50,3 +54,5 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 end
+
+gem "devise", "~> 4.9"

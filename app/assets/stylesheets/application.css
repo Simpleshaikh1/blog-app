@@ -181,3 +181,18 @@ form textarea {
 body h1 {
   text-align: center;
 }
+
+.field {
+  margin: 1rem;
+}
+
+h2 {
+  margin-left: 40rem;
+  margin-bottom: 2rem;
+}
+
+.actions {
+  margin-left: 20rem;
+  margin-top: 2rem;
+  padding: 2rem;
+}
