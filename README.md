@@ -112,6 +112,12 @@ You can deploy this project:
 - Twitter: [@twitterhandle](https://twitter.com/simpleshaikh1)
 - LinkedIn: [LinkedIn](https://linkedin.com/in/toyyib-abayomi)
 
+👤 **Nweneary Uzochukwu Winnie**
+
+- GitHub: [@githubhandle](https://github.com/wineshuga)
+- Twitter: [@twitterhandle](https://twitter.com/wineshuga)
+- LinkedIn: [LinkedIn](https://linkedin.com/in/wineshuga)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- FUTURE FEATURES -->
