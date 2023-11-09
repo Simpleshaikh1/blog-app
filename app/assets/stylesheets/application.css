@@ -70,6 +70,11 @@ form {
   width: 100%;
 }
 
+h2 {
+  margin-left: 40rem;
+  margin-bottom: 2rem;
+}
+
 .user_details h2 {
   margin-left: 10%;
 }
@@ -180,4 +185,14 @@ form textarea {
 
 body h1 {
   text-align: center;
+}
+
+.field {
+  margin: 1rem;
+}
+
+.actions {
+  margin-left: 20rem;
+  margin-top: 2rem;
+  padding: 2rem;
 }
