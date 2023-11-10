@@ -4,13 +4,14 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
   has_many :posts, foreign_key: :author_id
-  has_many :comments
+  has_many :comments, foreign_key: :user_id
   has_many :likes
 
   attribute :name, :string
   attribute :bio, :text
   attribute :post_counter, :integer, default: 0
   attribute :photo, :string
+  # enum role: %i[user admin]
 
   validates :name, presence: true
   validates :post_counter, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true

@@ -1,8 +1,14 @@
 <h1 class="users_container">Here is a list of users</h1>
 <ul class="users_container">
+  <% unless @users.nil? %>
   <% @users.each do |user| %>
     <%= link_to user_path(user.id) do %>
       <%= render "shared/user_profile", user: user %>
     <% end %>
+  <% end %>
+  <% else %>
+  <p>Please sign in or sign up to view user details.</p>
+    <%= link_to 'Sign In', new_user_session_path %>
+    <%= link_to 'Sign Up', new_user_registration_path %>
   <% end %>
 </ul>
