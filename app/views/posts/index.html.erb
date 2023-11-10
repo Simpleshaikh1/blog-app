@@ -9,7 +9,7 @@
           <p><%=post.text&.size.to_i > 100 ? "#{post.text[0..100]} ..." : post.text %></p>
           <div class="user_recent_posts">
             <span>
-              Comments: <%= post.comments.count %>,
+              Comments: <%= post.comments_counter %>,
             </span>
             <span>
               Likes: <%= post.likes_counter.nil? ? '0' : post.likes_counter %>
@@ -34,6 +34,9 @@
       </li>
     <% end %>
   <% end %>
+  <a href="<%= user_posts_path(@user) %>">
+    <button id="back-btn">New Post</button>
+  </a>
   <div class="link_user_posts">
     <%= link_to "Pagination", user_posts_path(user_id: @user.id) %>
   </div>

@@ -1,8 +1,11 @@
 class PostsController < ApplicationController
     load_and_authorize_resource
+
+    before_action :find_user, only: %i[index show like unlike destroy]
+    before_action :find_post, only: %i[show like unlike destroy]
+
     def index
       @user = User.find(params[:user_id])
-      # @posts = @user.posts.includes(:comments)
 
       # N+1 solution
       page = params[:page] || 1
@@ -26,22 +29,56 @@ class PostsController < ApplicationController
 
     def new
       @user = current_user
-      @post = @user.posts.build
+      @post = @user.posts.new
     end
 
     def create
       @user = current_user
-      @post = @user.posts.build(post_params)
+      @post = @user.posts.new(post_params)
     
       if @post.save
-        redirect_to user_post_path(@user, @post)
+        flash[:notice] = 'Post created successfully.'
+        redirect_to user_post_path(@user)
       else
         render 'new'
       end
     end
 
+    def destroy
+      @post.likes.destroy_all
+      @post.comments.destroy_all
+      @post.destroy
+  
+      redirect_to user_posts_path(@user)
+    end
+
+    def like
+      @like = @post.likes.new
+      @like.author = current_user
+      @like.save
+      redirect_to user_post_path(@user, @post)
+    end
+
+    def unlike
+      @like = @post.likes.find_by(post: @post) # Find the like
+      @like&.destroy # Destroy the like if found
+      redirect_to user_post_path(@user, @post)
+    end
+
     private
     
+    def find_user
+      @user = User.find(params[:user_id])
+    end
+
+    def find_post
+      @post = @user.posts.find_by(id: params[:id])
+      return unless @post.nil?
+
+      flash[:alert] = 'Post not found, back to posts page'
+      redirect_to user_posts_path(@user)
+    end
+
     def post_params
       params.require(:post).permit(:Title, :Text)
     end

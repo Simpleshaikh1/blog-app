@@ -1,24 +1,53 @@
 class CommentsController < ApplicationController
+    before_action :find_user
+    before_action :find_post
+    before_action :find_comment, only: :destroy
+
     def new
-      @comment = Comment.new
+      @comment = @post.comments.new
     end
   
     def create
       @user = current_user
       @post = Post.find(params[:post_id])
-      @comment = @post.comments.build(comment_parms)
+      @comment = @post.comments.new(comment_parms)
       @comment.user = @user
   
       if @comment.save
-        redirect_to user_post_path(@user, @post, @comment)
+        flash[:notice] = 'Comment created successfully.'
+        redirect_to user_post_path(@post.author, @post)
       else
         render 'new'
       end
     end
-  
+
+    def destroy
+      authorize! :delete, @comment
+
+      if @comment.destroy
+        flash[:notice] = 'Comment was successfully deleted.'
+      else
+        flash[:alert] = 'Failed to delete comment.'
+      end
+
+      redirect_to user_post_path(@user, @post)
+    end
+
     private
-  
+
+    def find_user
+      @user = current_user
+    end
+
+    def find_post
+      @post = Post.find(params[:post_id])
+    end
+
+    def find_comment
+      @comment = @post.comments.find(params[:id])
+    end
+
     def comment_parms
-      params.require(:comment).permit(:Text)
+      params.require(:comment).permit(:text)
     end
 end
